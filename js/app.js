@@ -85,32 +85,115 @@ tableData.addEventListener("click", function (e) {
     const tasks = e.target.parentElement.parentElement;
     const taskId = tasks.dataset.id;
     const taskChild = tasks.children;
-  } else if (e.target.id == "check") {
 
+    // name of task
+    let taskName;
+    let input;
+    // task priority
+    let taskPriority;
+    let select;
+    // task date
+    let taskDate;
+    let date;
+    // action buttons
+    let actionButton;
+
+    [...taskChild].forEach((taskChildData) => {
+      if (taskChildData.id === "name") {
+        taskName = taskChildData;
+        const previousName = taskChildData.textContent;
+        taskChildData.innerHTML = "";
+        input = document.createElement("input");
+        input.type = "text";
+        input.value = previousName;
+        taskChildData.appendChild(input);
+      } else if (taskChildData.id === "priority") {
+        taskPriority = taskChildData;
+        const previousPriority = taskChildData.textContent;
+        taskChildData.innerHTML = "";
+        select = document.createElement("select");
+        select.innerHTML = `<option disabled>Select one</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>`;
+        if (previousPriority === "high") {
+          select.selectedIndex = 1;
+        } else if (previousPriority === "medium") {
+          select.selectedIndex = 2;
+        } else if (previousPriority === "low") {
+          select.selectedIndex = 3;
+        }
+        taskChildData.appendChild(select);
+      } else if (taskChildData.id === "date") {
+        taskDate = taskChildData;
+        const previousDate = taskChildData.textContent;
+        taskChildData.innerHTML = "";
+        date = document.createElement("input");
+        date.type = "date";
+        date.value = previousDate;
+        taskChildData.appendChild(date);
+      } else if (taskChildData.id === "actions") {
+        actionButton = taskChildData;
+        let previousButton = taskChildData.innerHTML;
+        taskChildData.innerHTML = "";
+        const saveButton = document.createElement("button");
+        saveButton.innerHTML = `<i class="fas fa-save"></i>`;
+        saveButton.addEventListener("click", function () {
+          // new name of task
+          const newTaskName = input.value;
+          taskName.innerHTML = newTaskName;
+
+          // new task priority
+          const newPriority = select.value;
+          taskPriority.innerHTML = newPriority;
+
+          //new date of task
+          const newDate = date.value;
+          taskDate.innerHTML = newDate;
+
+          // actions buttons
+          actionButton.innerHTML = previousButton;
+
+          // save data to localStorage
+          let data = getDataFromLocalStorage();
+          data = data.filter((task) => {
+            if (task.id === taskId) {
+              task.name = newTaskName;
+              task.priority = newPriority;
+              task.date = newDate;
+              return task;
+            } else {
+              return task;
+            }
+          });
+          setDataToLocalStorage(data);
+        });
+        taskChildData.appendChild(saveButton);
+      }
+    });
+  } else if (e.target.id == "check") {
     const tasks = e.target.parentElement.parentElement;
     const taskId = tasks.dataset.id;
     const taskChild = tasks.children;
-
     [...taskChild].forEach((taskChildData) => {
-      if (taskChildData.id == "status") {
-
+      if (taskChildData.id === "status") {
         let data = getDataFromLocalStorage();
         data = data.filter((task) => {
           if (task.id === taskId) {
             // return task;
-            if(task.status=="incomplete"){
-              task.status="complete"
-              taskChildData.innerHTML="complete"
-            }else{
-              task.status="incomplete"
-              taskChildData.innerHTML="incomplete"
+            if (task.status == "incomplete") {
+              task.status = "complete";
+              taskChildData.innerHTML = "complete";
+            } else {
+              task.status = "incomplete";
+              taskChildData.innerHTML = "incomplete";
             }
             return task;
-          }else{
+          } else {
             return task;
           }
         });
-        setDataToLocalStorage(data); 
+        setDataToLocalStorage(data);
       }
     });
   } else if (e.target.id == "delete") {
