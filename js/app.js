@@ -10,7 +10,7 @@ const tableData = getId("tableBody");
 const today = new Date().toISOString().slice(0, 10);
 date.value = today;
 
-// event of task adding secion
+// event of task adding section
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   const inputs = [...this.elements];
