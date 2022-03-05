@@ -7,8 +7,144 @@ function getId(id) {
 const form = getId("form");
 const date = getId("date");
 const tableData = getId("tableBody");
+const searchTask = getId("task_name");
+const filter = getId("filter");
+const sort = getId("sort");
+const byDate = getId("byDate");
 const today = new Date().toISOString().slice(0, 10);
 date.value = today;
+
+// filtering functionality
+
+// filter by search
+searchTask.addEventListener("input", function (e) {
+  tableData.innerHTML = "";
+  filter.selectedIndex = 0;
+  sort.selectedIndex = 0;
+  byDate.value="";
+  const searchTaskName = e.target.value;
+  const data = getDataFromLocalStorage();
+  let index = 0;
+  data.forEach((task) => {
+    if (task.name.toLowerCase().includes(searchTaskName.toLowerCase())) {
+      index++;
+      displayData(task, index);
+    }
+  });
+});
+
+// filter by filterOption
+filter.addEventListener("change", function (e) {
+  searchTask.value = "";
+  tableData.innerHTML = "";
+  sort.selectedIndex = 0;
+  byDate.value="";
+  const filterTerm = e.target.value;
+  const data = getDataFromLocalStorage();
+  let taskIndex = 0;
+  if (filterTerm === "all") {
+    data.forEach((task, index) => {
+      displayData(task, index + 1);
+    });
+  } else if (filterTerm === "complete") {
+    data.forEach((task) => {
+      if (task.status === "complete") {
+        taskIndex++;
+        displayData(task, taskIndex);
+      }
+    });
+  } else if (filterTerm === "incomplete") {
+    data.forEach((task) => {
+      if (task.status === "incomplete") {
+        taskIndex++;
+        displayData(task, taskIndex);
+      }
+    });
+  } else if (filterTerm === "today") {
+    data.forEach((task) => {
+      if (task.date === today) {
+        taskIndex++;
+        displayData(task, taskIndex);
+      }
+    });
+  } else if (filterTerm === "high") {
+    data.forEach((task) => {
+      if (task.priority === "high") {
+        taskIndex++;
+        displayData(task, taskIndex);
+      }
+    });
+  } else if (filterTerm === "medium") {
+    data.forEach((task) => {
+      if (task.priority === "medium") {
+        taskIndex++;
+        displayData(task, taskIndex);
+      }
+    });
+  } else if (filterTerm === "low") {
+    data.forEach((task) => {
+      if (task.priority === "low") {
+        taskIndex++;
+        displayData(task, taskIndex);
+      }
+    });
+  }
+});
+
+// filter by sortOption
+sort.addEventListener("change", function (e) {
+  const sortTerm = e.target.value;
+  searchTask.value = "";
+  tableData.innerHTML = "";
+  filter.selectedIndex = 0;
+  byDate.value="";
+  const data = getDataFromLocalStorage();
+  if (sortTerm === "newest") {
+    data.sort((firstData, secondData) => {
+      if (new Date(firstData.date) < new Date(secondData.date)) {
+        return 1;
+      } else if (new Date(firstData.date) > new Date(secondData.date)) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+  } else {
+    data.sort((firstData, secondData) => {
+      if (new Date(firstData.date) > new Date(secondData.date)) {
+        return 1;
+      } else if (new Date(firstData.date) < new Date(secondData.date)) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+  }
+
+  data.forEach((task, index) => {
+    displayData(task, index + 1);
+  });
+});
+
+byDate.addEventListener("change", function (e) {
+  const selectedDate = e.target.value;
+  searchTask.value = "";
+  tableData.innerHTML = "";
+  filter.selectedIndex = 0;
+  sort.selectedIndex = 0;
+  const data = getDataFromLocalStorage();
+  if(selectedDate){
+    data.forEach((task, index) => {
+      if (selectedDate === task.date) {
+        displayData(task, index + 1);
+      }
+    });
+  }else{
+    data.forEach((task, index) => {
+        displayData(task, index + 1);
+    });
+  }
+});
 
 // event of task adding section
 form.addEventListener("submit", function (e) {
