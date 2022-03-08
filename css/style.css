@@ -1,12 +1,12 @@
 * {
-  margin: 0;
-  padding: 0;
+  margin: 0px;
+  padding: 0px;
   box-sizing: border-box;
 }
-
 body {
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #d2c9bd;
+  background-color: rgba(91, 91, 144, 0.39);
+  color: rgb(91, 91, 144);
   height: 100vh;
   display: flex;
   align-items: center;
@@ -18,6 +18,7 @@ main {
   width: 100%;
   height: 95vh;
   padding: 10px;
+  border-radius: 25px;
 }
 .title {
   text-align: center;
@@ -25,9 +26,9 @@ main {
 }
 .title::after {
   content: "";
-  width: 239px;
+  width: 150px;
   height: 3px;
-  background-color: rgb(54, 52, 52);
+  background-color: rgb(91, 91, 144);
   position: absolute;
   top: 40px;
   right: 50%;
@@ -39,29 +40,25 @@ main {
 .separator {
   width: 100%;
   height: 2px;
-  background-color: rgb(54, 52, 52);
+  background-color: rgb(91, 91, 144);
   margin-bottom: 5px;
 }
 form#form {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  grid-gap: 5px;
-  margin: 5px 0px;
+  gap: 5px;
+  margin: 10px 0px;
 }
 .tools {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin: 5px 0px;
+  margin: 10px 0px;
   gap: 5px;
 }
 .taskName {
-  flex: 1;
-  /* align-items: center;
-  display: flex;
-  justify-content: center;
-  gap: 5px; */
+  flex: 1 1 0%;
 }
 input#name {
   max-width: 447px;
@@ -77,7 +74,6 @@ input[type="submit"] {
   width: 100%;
   padding: 12px;
   border: none;
-  font: 25px;
   font-weight: bold;
   border-radius: 10px;
   color: white;
@@ -106,7 +102,7 @@ input#date {
 .search input {
   padding: 10px;
   max-width: 425px;
-  width: 100%;
+  width: 87%;
   border: none;
   border-radius: 10px;
   outline: none;
@@ -119,7 +115,31 @@ input#date {
   outline: none;
 }
 .search {
-  flex: 1;
+  flex: 1 1 0%;
+}
+#bulk_action {
+  background: rgba(136, 136, 233, 0.42);
+  border-radius: 10px;
+  display: none;
+  justify-content: space-between;
+  padding: 15px;
+  margin: 10px 0px;
+}
+.bulk_action_btn > button,
+.close {
+  padding: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: 10px;
+  border: none;
+  color: rgb(91, 91, 144);
+}
+button.close {
+  border-radius: 50%;
+  width: 38px;
+  outline: none;
+  background: red;
+  color: white;
 }
 table {
   width: 100%;
@@ -129,24 +149,23 @@ td {
   padding: 10px 0px;
   font-size: 18px;
   border-radius: 10px;
-  background-color: #d2c9c9;
+  background-color: rgb(210, 201, 201);
 }
 table {
   width: 100%;
 }
-
 td {
   text-align: center;
   padding: 10px 0px;
   font-size: 18px;
   border-radius: 10px;
-  background-color: #d2c9c9;
+  background-color: rgb(210, 201, 201);
 }
 td button {
   width: 25px;
   font-size: 20px;
-  color: #5b5b90;
+  color: rgb(91, 91, 144);
 }
-td button i{
+td button i {
   pointer-events: none;
 }

@@ -1,9 +1,8 @@
+//=============================get elements by id start=============================\\
 // elements getting function
 function getId(id) {
   return document.getElementById(id);
 }
-
-// get elements by id
 const form = getId("form");
 const date = getId("date");
 const tableData = getId("tableBody");
@@ -11,17 +10,21 @@ const searchTask = getId("task_name");
 const filter = getId("filter");
 const sort = getId("sort");
 const byDate = getId("byDate");
+const selectAll = getId("selectAll");
+const bulk_action = getId("bulk_action");
 const today = new Date().toISOString().slice(0, 10);
 date.value = today;
 
-// filtering functionality
+//=============================get elements by id end=============================\\
+
+//========================filtering functionality start========================\\
 
 // filter by search
 searchTask.addEventListener("input", function (e) {
   tableData.innerHTML = "";
   filter.selectedIndex = 0;
   sort.selectedIndex = 0;
-  byDate.value="";
+  byDate.value = "";
   const searchTaskName = e.target.value;
   const data = getDataFromLocalStorage();
   let index = 0;
@@ -38,7 +41,7 @@ filter.addEventListener("change", function (e) {
   searchTask.value = "";
   tableData.innerHTML = "";
   sort.selectedIndex = 0;
-  byDate.value="";
+  byDate.value = "";
   const filterTerm = e.target.value;
   const data = getDataFromLocalStorage();
   let taskIndex = 0;
@@ -97,7 +100,7 @@ sort.addEventListener("change", function (e) {
   searchTask.value = "";
   tableData.innerHTML = "";
   filter.selectedIndex = 0;
-  byDate.value="";
+  byDate.value = "";
   const data = getDataFromLocalStorage();
   if (sortTerm === "newest") {
     data.sort((firstData, secondData) => {
@@ -133,18 +136,20 @@ byDate.addEventListener("change", function (e) {
   filter.selectedIndex = 0;
   sort.selectedIndex = 0;
   const data = getDataFromLocalStorage();
-  if(selectedDate){
+  if (selectedDate) {
     data.forEach((task, index) => {
       if (selectedDate === task.date) {
         displayData(task, index + 1);
       }
     });
-  }else{
+  } else {
     data.forEach((task, index) => {
-        displayData(task, index + 1);
+      displayData(task, index + 1);
     });
   }
 });
+
+//========================filtering functionality end==========================\\
 
 // event of task adding section
 form.addEventListener("submit", function (e) {
@@ -171,6 +176,7 @@ form.addEventListener("submit", function (e) {
     setDataToLocalStorage(data);
   }
   this.reset();
+  date.value = today;
 });
 
 window.onload = reloadData;
@@ -183,10 +189,93 @@ function reloadData() {
   });
 }
 
+//=========================bulk actions start=======================\\
+
+let checkData = [];
+
+// single selected data
+function select(e) {
+  const tableRow = e.target.parentElement.parentElement;
+  const id = e.target.parentElement.parentElement;
+  const checkedData = e.target.checked;
+  if (checkedData) {
+    checkData.push(tableRow);
+    bulkAction();
+  } else {
+    const index = checkData.findIndex((tableRow) => {
+      return tableRow.dataset.id === id;
+    });
+    checkData.splice(index, 1);
+    bulkAction();
+  }
+}
+
+// all select data
+selectAll.addEventListener("click", function (e) {
+  const checked = e.target.checked;
+  const selectedAll = document.getElementsByClassName("checkbox");
+  checkData = [];
+  if (checked) {
+    [...selectedAll].forEach((checkBox) => {
+      const tableRow = checkBox.parentElement.parentElement;
+      checkData.push(tableRow);
+      checkBox.checked = true;
+      bulkAction();
+    });
+  } else {
+    [...selectedAll].forEach((checkBox) => {
+      checkBox.checked = false;
+      bulkAction();
+    });
+  }
+});
+
+// checkData length function
+function bulkAction() {
+  if (checkData.length) {
+    bulk_action.style.display = "flex";
+  } else {
+    bulk_action.style.display = "none";
+  }
+}
+
+// close the modal section
+document
+  .getElementsByClassName("close")[0]
+  .addEventListener("click", function (e) {
+    bulk_action.style.display = "none";
+    const selectedAll = document.getElementsByClassName("checkbox");
+    checkData = [];
+    [...selectedAll].forEach((checkBox) => {
+      checkBox.checked = false;
+    });
+    selectAll.checked = false;
+  });
+
+// delete task by bulk delete button
+document
+  .getElementsByClassName("delete")[0]
+  .addEventListener("click", function (e) {
+    let data = getDataFromLocalStorage();
+    checkData.forEach((tasks) => {
+      const taskId = tasks.dataset.id;
+      data = data.filter((task) => task.id !== taskId);
+      tasks.remove();
+    });
+    setDataToLocalStorage(data);
+  });
+//=========================bulk actions end=======================\\
+
+//====================display data from local storage start===========================\\
 function displayData({ name, priority, date, status, id }, index) {
   const tr = document.createElement("tr");
+  const checkBox = document.createElement("input");
+  checkBox.type = "checkbox";
+  checkBox.className = "checkbox";
+  checkBox.addEventListener("click", select);
   tr.dataset.id = id;
   tr.innerHTML = `
+    <td id="check"></td>
     <td id="no">${index}</td>
     <td id="name">${name}</td>
     <td id="priority">${priority}</td>
@@ -197,9 +286,12 @@ function displayData({ name, priority, date, status, id }, index) {
     <button id="check"><i class="fas fa-check"></i></button>
     <button id="delete"><i class="fas fa-trash"></i></button>
     </td>`;
+  tr.children[0].appendChild(checkBox);
   tableData.appendChild(tr);
 }
+//====================display data from local storage end=============================\\
 
+//========================set and get data from local storage start==========================\\
 // get data from localStorage
 function getDataFromLocalStorage() {
   let tasks = [];
@@ -214,8 +306,9 @@ function getDataFromLocalStorage() {
 function setDataToLocalStorage(data) {
   localStorage.setItem("tasks", JSON.stringify(data));
 }
+//========================set and get data from local storage end============================\\
 
-// actions to delete,edit and status
+//==============actions of delete,edit and status from local storage to ui start==============\\
 tableData.addEventListener("click", function (e) {
   if (e.target.id == "edit") {
     const tasks = e.target.parentElement.parentElement;
@@ -346,3 +439,4 @@ tableData.addEventListener("click", function (e) {
     reloadData();
   }
 });
+//==============actions of delete,edit and status from local storage to ui end================\\
