@@ -11,6 +11,10 @@ const filter = getId("filter");
 const sort = getId("sort");
 const byDate = getId("byDate");
 const selectAll = getId("selectAll");
+const bulkPriority = getId("bulkPriority");
+const bulkStatus = getId("bulkStatus");
+const editSelect = getId("editSelect");
+const editName = getId("editName");
 const bulk_action = getId("bulk_action");
 const today = new Date().toISOString().slice(0, 10);
 date.value = today;
@@ -239,10 +243,112 @@ function bulkAction() {
   }
 }
 
+// change priority bulk
+bulkPriority.addEventListener("change", function (e) {
+  const priority = e.target.value;
+  let data = getDataFromLocalStorage();
+  checkData.forEach((tableRow) => {
+    const id = tableRow.dataset.id;
+    [...tableRow.children].forEach((tableData) => {
+      if (tableData.id === "priority") {
+        tableData.innerHTML = priority;
+        data = data.filter((task) => {
+          if (task.id === id) {
+            task.priority = priority;
+            return task;
+          } else {
+            return task;
+          }
+        });
+        setDataToLocalStorage(data);
+      }
+    });
+  });
+});
+
+// change status bulk
+bulkStatus.addEventListener("change", function (e) {
+  const status = e.target.value;
+  let data = getDataFromLocalStorage();
+  checkData.forEach((tableRow) => {
+    const id = tableRow.dataset.id;
+    [...tableRow.children].forEach((tableData) => {
+      if (tableData.id === "status") {
+        tableData.innerHTML = status;
+        data = data.filter((task) => {
+          if (task.id === id) {
+            task.status = status;
+            return task;
+          } else {
+            return task;
+          }
+        });
+        setDataToLocalStorage(data);
+      }
+    });
+  });
+});
+
+// edit name and date
+editSelect.addEventListener("change", function (e) {
+  if (e.target.value === "name") {
+    editName.type = "text";
+    editName.value = "";
+  } else {
+    editName.type = "date";
+    editName.value = "";
+  }
+});
+
+editName.addEventListener("input", function (e) {
+  const modifiedValue = e.target.value;
+  let data = getDataFromLocalStorage();
+  if (e.target.type === "text") {
+    checkData.forEach((tableRow) => {
+      const id = tableRow.dataset.id;
+      [...tableRow.children].forEach((tableData) => {
+        if (tableData.id === "name") {
+          tableData.innerHTML = modifiedValue;
+          data = data.filter((task) => {
+            if (task.id === id) {
+              task.name = modifiedValue;
+              return task;
+            } else {
+              return task;
+            }
+          });
+        }
+      });
+    });
+  } else {
+    checkData.forEach((tableRow) => {
+      const id = tableRow.dataset.id;
+      [...tableRow.children].forEach((tableData) => {
+        if (tableData.id === "date") {
+          tableData.innerHTML = modifiedValue;
+          data = data.filter((task) => {
+            if (task.id === id) {
+              task.date = modifiedValue;
+              return task;
+            } else {
+              return task;
+            }
+          });
+        }
+      });
+    });
+  }
+  setDataToLocalStorage(data);
+});
+
 // close the modal section
 document
   .getElementsByClassName("close")[0]
   .addEventListener("click", function (e) {
+    editName.value = "";
+    editName.type = "text";
+    editSelect.value = "";
+    editSelect.selectedIndex = 0;
     bulk_action.style.display = "none";
     const selectedAll = document.getElementsByClassName("checkbox");
     checkData = [];

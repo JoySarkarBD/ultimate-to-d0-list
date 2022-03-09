@@ -134,6 +134,28 @@ input#date {
   border: none;
   color: rgb(91, 91, 144);
 }
+.bulk_action_btn {
+  display: flex;
+  gap: 10px;
+}
+select#bulkPriority,
+input#editName,
+select#bulkStatus {
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  outline: none;
+}
+.bulkEdit {
+  background: white;
+  border-radius: 10px;
+}
+select#editSelect {
+  border-radius: 0px 10px 10px 0px;
+  border-left: 2px solid black;
+  padding: 9px;
+  outline: none;
+}
 button.close {
   border-radius: 50%;
   width: 38px;

@@ -80,7 +80,31 @@
       <div class="bulk_action" id="bulk_action">
         <div class="bulk_action_btn">
           <button class="delete">Delete</button>
-          <button class="edit">Edit</button>
+
+          <div class="bulkPriority">
+            <select name="priority" id="bulkPriority">
+              <option disabled selected>Select Priority</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+
+          <div class="bulkStatus">
+            <select name="status" id="bulkStatus">
+              <option disabled selected>Select Status</option>
+              <option value="complete">Complete</option>
+              <option value="incomplete">Incomplete</option>
+            </select>
+          </div>
+          
+          <div class="bulkEdit">
+            <input type="text" placeholder="Type to edit name" id="editName">
+            <select id="editSelect">
+              <option value="name">Name</option>
+              <option value="date">Date</option>
+            </select>
+          </div>
         </div>
         <button class="close">X</button>
       </div>
